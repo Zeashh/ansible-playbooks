@@ -1,0 +1,37 @@
+- name: Set up Docker and DNS on Edge hosts
+  hosts: edge
+  order: sorted
+  serial: 1
+  become: true
+  force_handlers: true
+  vars_prompt:
+    - name: pihole_app_password
+      prompt: "Enter Pi-Hole's app password (for configuring blocklists): "
+      private: true
+  roles:
+    # Docker
+    - geerlingguy.docker
+    # Pi-Hole DNS
+    - grghomelab.roles.pihole
+
+- name: Set up Edge hosts
+  hosts: edge
+  order: sorted
+  become: true
+  force_handlers: true
+  roles:
+    # ISC DHCP
+    - grghomelab.roles.isc_dhcp
+    # Keepalived
+    - grghomelab.roles.keepalived
+    # Crowdsec
+    - grghomelab.roles.crowdsec
+    # HAProxy and Certbot
+    - grghomelab.roles.haproxy
+    # Admin Wireguard VPN
+    - grghomelab.roles.wireguard
+    # Cloudflare DDNS
+    - grghomelab.roles.cloudflare_ddns
+
+  # Set up Tailscale routers
+- import_playbook: ../headscale/playbook.yml

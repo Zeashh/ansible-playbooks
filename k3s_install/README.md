@@ -1,0 +1,6 @@
+Needs these environment variables:
+- K3S_INSTALL_TOKEN
+- PROXMOX_USER
+- PROXMOX_TOKEN_ID
+- PROXMOX_TOKEN_SECRET
+- PROXMOX_URL

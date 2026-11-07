@@ -1,0 +1,9 @@
+# Use -K (prompt for become password)
+
+- name: Install K3s on all control plane and node hosts
+  hosts: k3s
+  order: sorted
+  become: true
+  force_handlers: true
+  roles:
+    - grghomelab.roles.k3s_install

@@ -1,0 +1,12 @@
+# Same as on main
+collections
+roles
+.venv
+.env
+
+# GitHub syncing
+templates/
+files/
+inventory/
+.github
+image-list.txt

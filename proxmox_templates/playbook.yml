@@ -1,0 +1,19 @@
+# Use -K (prompt for become password), since it's required for configuring template LXC/VM before turning into template
+
+- name: Delete existing templates and create new ones
+  hosts: template_builder
+  gather_facts: false
+  vars_prompt:
+    - name: root_pw
+      prompt: "Enter template's root password" 
+      private: true
+    - name: local_user_pw
+      prompt: "Enter template's local user password" 
+      private: true
+  tasks:
+    - name: Loop
+      include_tasks:
+        file: tasks.yml
+      loop: "{{ templates }}"
+      loop_control:
+        loop_var: template

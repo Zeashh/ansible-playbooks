@@ -1,0 +1,33 @@
+- name: Set template variable
+  set_fact:
+    proxmox_templates_template: "{{ template | combine({'root_password': root_pw, 'user_password': local_user_pw}) }}"
+
+- name: "Delete template {{ template.name }} on node {{ template.node }} (VM ID: {{ template.id }})"
+  include_role:
+    name: grghomelab.roles.proxmox_templates
+    tasks_from: delete
+
+- name: "Create new template {{ template.name }} on node {{ template.node }} (VM ID: {{ template.id }})"
+  include_role:
+    name: grghomelab.roles.proxmox_templates
+    tasks_from: create
+
+- name: Forget old host key
+  ansible.builtin.known_hosts:
+    name: {{ proxmox_template_running_address }}
+    state: absent
+
+- ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/../inventory/group_vars/os_debian.yml"
+
+- name: "Common config on {{ template.name }} on node {{ template.node }} (VM ID: {{ template.id }})"
+  include_role:
+    name: grghomelab.roles.common_config
+    apply:
+      delegate_to: {{ proxmox_template_running_address }}
+      become: true
+
+- name: "Turn VM/LXC {{ template.name }} on node {{ template.node }} (VM ID: {{ template.id }}) into template"
+  include_role:
+    name: grghomelab.roles.proxmox_templates
+    tasks_from: template

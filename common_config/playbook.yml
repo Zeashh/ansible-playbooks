@@ -1,0 +1,7 @@
+- name: Set up common configuration on all Debian hosts
+  hosts: os_debian
+  order: sorted
+  become: true
+  force_handlers: true
+  roles:
+    - grghomelab.roles.common_config
