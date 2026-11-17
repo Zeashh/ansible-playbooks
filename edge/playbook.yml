@@ -1,3 +1,4 @@
+---
 - name: Set up Docker and DNS on Edge hosts
   hosts: edge
   order: sorted
@@ -33,5 +34,6 @@
     # Cloudflare DDNS
     - grghomelab.roles.cloudflare_ddns
 
-  # Set up Tailscale routers
-- import_playbook: ../headscale/playbook.yml
+# Set up Tailscale routers
+- name: Set up Headscale and Tailscale routers
+  import_playbook: ../headscale/playbook.yml

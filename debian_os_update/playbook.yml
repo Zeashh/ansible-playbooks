@@ -1,3 +1,4 @@
+---
 - name: Update Debian 13 hosts
   hosts: os_debian
   order: sorted
@@ -12,12 +13,13 @@
     - name: Check if a reboot is required
       ansible.builtin.stat:
         path: /var/run/reboot-required
-        get_checksum: no
+        get_checksum: false
       register: reboot_required_file
 
     - name: Reboot if allowed and required
       ansible.builtin.reboot:
-      when: "(proxmox_tags_parsed is defined and 'auto-reboot' in proxmox_tags_parsed and reboot_required_file.stat.exists is true) or (auto_reboot is defined and auto_reboot is true and reboot_required_file.stat.exists is true)"
+      when: "(proxmox_tags_parsed is defined and 'auto-reboot' in proxmox_tags_parsed and reboot_required_file.stat.exists is true) or (auto_reboot is defined and
+        auto_reboot is true and reboot_required_file.stat.exists is true)"
 
     - name: Run autoremove
       ansible.builtin.apt:

@@ -1,3 +1,4 @@
+---
 - name: Set up Headscale server and jump host
   hosts: headscale_server,headscale_jump,edge
   become: true

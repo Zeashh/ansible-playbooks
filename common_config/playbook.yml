@@ -1,3 +1,4 @@
+---
 - name: Set up common configuration on all Debian hosts
   hosts: os_debian
   order: sorted

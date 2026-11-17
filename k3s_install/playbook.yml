@@ -1,3 +1,4 @@
+---
 # Use -K (prompt for become password)
 
 - name: Install K3s on all control plane and node hosts
