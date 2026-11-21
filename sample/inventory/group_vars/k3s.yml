@@ -1,0 +1,8 @@
+#### Role configurations
+
+## k3s_install
+
+k3s_install_version: "latest" # Not valid of course, look up the latest version and specify it
+k3s_install_token: "{{ lookup('ansible.builtin.env', 'K3S_INSTALL_TOKEN') }}"
+k3s_install_endpoint_domain: "k8s.{{ local_domain }}"
+k3s_install_cluster_init: false

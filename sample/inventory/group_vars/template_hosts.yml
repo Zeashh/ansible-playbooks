@@ -1,0 +1,55 @@
+template_ssh_keys: "{{ hostvars[groups['os_debian'][0]]['common_config_authorized_ssh_keys'][:2] }}"
+
+templates:
+  - id: 20000
+    node: pve-0
+    name: debian
+    type: lxc
+    unprivileged: true
+    storage: local-zfs
+    disk: "debian-13-standard_13.6-1_amd64.tar.zst"
+    disk_size: 8
+    cores: 1
+    memory: 512
+    user: john
+    network_bridge: vmbr0
+    ip: 10.0.0.254/24
+    gateway: 10.0.0.1
+    sshkeys: "{{ template_ssh_keys }}"
+    tags:
+      - debian
+  - id: 20001
+    node: pve-0
+    name: privileged-debian
+    type: lxc
+    unprivileged: true
+    storage: local-zfs
+    disk: "debian-13-standard_13.6-1_amd64.tar.zst"
+    disk_size: 8
+    cores: 1
+    memory: 512
+    user: john
+    network_bridge: vmbr0
+    ip: 10.0.0.254/24
+    gateway: 10.0.0.1
+    sshkeys: "{{ template_ssh_keys }}"
+    tags:
+      - debian
+  - id: 10000
+    node: pve-0
+    name: debian
+    ostype: l26
+    type: vm
+    storage: local-zfs
+    disk: "https://cloud.debian.org/images/cloud/trixie/20261001-2618/debian-13-genericcloud-amd64-20261001-2618.qcow2"
+    disk_format: raw
+    disk_size: 16
+    cores: 2
+    memory: 2048
+    user: john
+    network_bridge: vmbr0
+    ip: 10.0.0.254/24
+    gateway: 10.0.0.1
+    sshkeys: "{{ template_ssh_keys }}"
+    tags:
+      - debian

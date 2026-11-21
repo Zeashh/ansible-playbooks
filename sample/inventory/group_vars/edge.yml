@@ -1,0 +1,122 @@
+pihole_0_domain: "pihole-0.{{ local_domain }}"
+pihole_1_domain: "pihole-1.{{ local_domain }}"
+
+#### Role configurations
+
+## pihole
+
+pihole_image: "git.{{ local_domain }}/images/pihole:latest"
+
+pihole_conf_dns_hosts:
+  - "10.0.0.10 {{ local_domain }}"
+
+pihole_conf_dns_cnameRecords:
+  - "apps.{{ local_domain }},{{ local_domain }}"
+
+pihole_conf_misc_dnsmasq_lines:
+  - "address=/apps.{{ local_domain }}/{{ haproxy_ips['internal'] }}"
+
+pihole_conf_dns_upstreams:
+  - "8.8.8.8"
+  - "8.8.4.4"
+  - "1.1.1.1"
+  - "1.0.0.1"
+  - "208.67.222.222"
+  - "208.67.220.220"
+
+pihole_blocklists_purge: true
+pihole_whitelists_purge: true
+pihole_blocklists:
+  - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+  - https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt
+  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts
+  - https://v.firebog.net/hosts/static/w3kbl.txt
+  - https://adaway.org/hosts.txt
+  - https://v.firebog.net/hosts/AdguardDNS.txt
+  - https://v.firebog.net/hosts/Admiral.txt
+  - https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt
+  - https://v.firebog.net/hosts/Easylist.txt
+  - https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext
+  - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt
+  - https://big.oisd.nl
+pihole_whitelists:
+  - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/whitelist-referral-native.txt
+
+pihole_timezone: "{{ timezone }}"
+pihole_conf_webserver_api_pwhash: "{{ lookup('ansible.builtin.env', 'PIHOLE_WEBSERVER_API_PASSWORD_HASH') }}"
+pihole_conf_webserver_api_app_pwhash: "{{ lookup('ansible.builtin.env', 'PIHOLE_WEBSERVER_APP_PASSWORD_HASH') }}"
+
+## isc_dhcp
+
+isc_dhcp_network: 10.0.0.0
+isc_dhcp_subnet: 255.255.255.0
+isc_dhcp_broadcast: 10.0.0.255
+isc_dhcp_gateway: 10.0.0.1
+isc_dhcp_start_address: 10.0.0.190
+isc_dhcp_end_address: 10.0.0.250
+isc_dhcp_dns_servers: "{{ groups[isc_dhcp_group] | map('extract', hostvars, ['ansible_facts', 'default_ipv4', 'address']) | list }}"
+isc_dhcp_domain: "{{ local_domain }}"
+isc_dhcp_search_domain: "{{ domain }}"
+
+isc_dhcp_reservations:
+  - hostname: pc
+    mac: 00:00:00:00:00:00
+    # DNS determines reserved IP
+    ip: pc
+
+## keepalived
+
+keepalived_vrrp_addresses: "{{ haproxy_ips.values() | list }}"
+keepalived_wireguard_container: "{{ wireguard_container_name }}"
+keepalived_headscale_health_url: "https://{{ hostvars[groups['headscale'][0]]['headscale_domain'] }}/health"
+keepalived_discord_webhook_url: "https://discord.com/api/webhooks/something"
+
+## crowdsec
+
+crowdsec_turnstile_site_key: "{{ lookup('ansible.builtin.env', 'CROWDSEC_CAPTCHA_SITE_KEY') }}"
+crowdsec_turnstile_secret_key: "{{ lookup('ansible.builtin.env', 'CROWDSEC_CAPTCHA_SECRET_KEY') }}"
+crowdsec_captcha_signing_key: "{{ lookup('ansible.builtin.env', 'CROWDSEC_CAPTCHA_SIGNING_KEY') }}"
+
+## haproxy
+
+haproxy_file_error_pages: "{{ file_dir }}/haproxy/error-pages"
+haproxy_template_haproxy_cfg: "{{ template_dir }}/haproxy/haproxy.cfg.j2"
+
+haproxy_ips:
+  internal: 10.0.0.20
+  external: 10.0.0.21
+
+haproxy_certbot_email: john@mail.com
+haproxy_cloudflare_token: "{{ lookup('ansible.builtin.env', 'HAPROXY_CLOUDFLARE_TOKEN') }}"
+
+haproxy_certificates:
+  - cn: "{{ domain }}"
+    valid_for:
+      - "{{ domain }}"
+      - "{{ domain }}."
+
+## tailscale
+
+tailscale_debian_suite: "{{ hostvars[groups['os_debian'][0]]['common_config_debian_suite'] }}"
+
+## wireguard
+
+wireguard_peers: "pc,phone"
+
+wireguard_image: "git.{{ local_domain }}/images/wireguard:latest"
+
+wireguard_group: edge
+wireguard_container_name: wireguard
+wireguard_port: 51820
+wireguard_timezone: "{{ timezone }}"
+wireguard_peerdns: "{{ haproxy_ips['internal'] }}"
+wireguard_serverurl: "{{ domain }}"
+
+## cloudflare_ddns
+
+cloudflare_ddns_token: "{{ haproxy_cloudflare_token }}"
+
+cloudflare_ddns_image: "git.{{ local_domain }}/images/cloudflare-ddns:latest"
+cloudflare_ddns_timezone: "{{ timezone }}"
+cloudflare_ddns_proxied_domains:
+  - "{{ domain }}"

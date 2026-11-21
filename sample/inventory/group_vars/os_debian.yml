@@ -1,0 +1,11 @@
+#### Role configuration
+
+## common_config
+
+common_config_local_domain: "{{ local_domain }}"
+common_config_system_locale: "{{ locale }}"
+common_config_debian_suite: "trixie"
+common_config_system_user: john
+common_config_authorized_ssh_keys:
+  # First 2 are given to Proxmox templates before adding the rest (see template_hosts.yml)
+  - "ssh-..."

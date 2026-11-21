@@ -1,0 +1,19 @@
+#### Global configuration
+
+domain: domain.com
+local_domain: "local.{{ domain }}"
+apps_domain: "apps.{{ local_domain }}"
+remote_domain: "remote.{{ domain }}"
+
+file_dir: "{{ playbook_dir }}/../files/"
+template_dir: "{{ playbook_dir }}/../templates"
+
+# System settings
+locale: en_US.UTF-8
+timezone: Etc/UTC
+
+# Default login user
+ansible_user: john
+
+# Proxmox templates
+proxmox_template_running_address: 10.0.0.254

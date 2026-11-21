@@ -5,9 +5,9 @@ roles
 .env
 
 # GitHub syncing
-templates/
-files/
-inventory/
-.github
-image-list.txt
-requirements.yml
+/templates/
+/files/
+/inventory/
+/.github
+/image-list.txt
+/requirements.yml

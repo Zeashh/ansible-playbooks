@@ -1,0 +1,36 @@
+plugin: "community.proxmox.proxmox"
+validate_certs: true
+# user: "{{ PROXMOX_USER }}"
+# token_id: "{{ PROXMOX_TOKEN_ID }}"
+# token_secret: "{{ PROXMOX_TOKEN_SECRET }}"
+# url: "{{ PROXMOX_URL }}"
+want_facts: true
+want_proxmox_nodes_ansible_host: true
+
+compose:
+  # Cloud-init IP, fallback to DNS
+  ansible_host: >
+    proxmox_ipconfig0.ip.split('/')[0]
+      if proxmox_ipconfig0 is defined and proxmox_ipconfig0.ip != 'dhcp'
+    else proxmox_name + '.local.domain.com'
+      if proxmox_name is defined
+    else proxmox_hostname + '.local.domain.com'
+
+filters:
+  # Don't take templates
+  - "proxmox_template | default(0) | int == 0"
+  # Manually marked offline VMs/CTs, clearly unreachable otherwise
+  - "'offline' not in (proxmox_tags_parsed | default([]) | list)"
+
+groups:
+  os_debian: "'debian' in (proxmox_tags_parsed | default([]) | list)"
+  edge: "'edge' in (proxmox_tags_parsed | default([]) | list)"
+  k3s: "'kubernetes' in (proxmox_tags_parsed | default([]) | list)"
+  k3s_control_plane: >
+    'kube-cp' in proxmox_name and
+    'kubernetes' in (proxmox_tags_parsed | default([]) | list)
+  k3s_node: >
+    'kube-node' in proxmox_name and
+    'kubernetes' in (proxmox_tags_parsed | default([]) | list)
+  headscale_jump: >
+    inventory_hostname == 'jump'

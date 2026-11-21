@@ -1,0 +1,37 @@
+proxmox_nodes:
+pve_nodes:
+  children:
+    proxmox_nodes:
+
+template_builder:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
+template_hosts:
+  children:
+    template_builder:
+    pve_nodes:
+
+pbs_nodes:
+  hosts:
+    ...
+pve_qdevice:
+  hosts:
+    ...
+
+headscale:
+  children:
+    headscale_server:
+    headscale_jump:
+    edge:
+headscale_server:
+  hosts:
+    ...
+headscale_jump:
+
+os_debian:
+  children:
+    pve_nodes:
+    pbs_nodes:
+    headscale_server:

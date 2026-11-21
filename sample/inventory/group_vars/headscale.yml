@@ -1,0 +1,29 @@
+#### Role configurations
+
+## headscale
+
+headscale_file_acl: "{{ file_dir }}/headscale/acl.json"
+headscale_template_headscale_config: "{{ template_dir }}/headscale/headscale_config.yaml.j2"
+
+headscale_domain: "{{ domain }}"
+headscale_public_ip: "{{ hostvars[groups['headscale_server'][0]]['ansible_host'] }}"
+headscale_headscale_version: "latest" # Not valid of course, look up the latest version and specify it
+headscale_headscale_arch: "amd64"
+headscale_derp_enabled: true
+headscale_dns_servers:
+  - "{{ hostvars[groups['edge'][0]]['ansible_host'] }}"
+  - "{{ hostvars[groups['edge'][1]]['ansible_host'] }}"
+headscale_search_domains:
+  - "{{ local_domain }}"
+
+headscale_letsencrypt_email: john@mail.com
+
+headscale_ssh_remote_user: "{{ hostvars[groups['headscale_server'][0]]['ansible_user'] }}"
+headscale_headscale_ssh_port: "{{ hostvars[groups['headscale_server'][0]]['ansible_port'] }}"
+
+headscale_router_tag: "tag:local"
+headscale_routes:
+  - 10.0.0.0/24
+  - 0.0.0.0/0
+  - ::/0
+

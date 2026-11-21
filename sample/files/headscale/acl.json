@@ -1,0 +1,28 @@
+{
+  "randomizeClientPort": true,
+  "groups": {
+    "group:admin": [
+      "john@mail.com"
+    ]
+  },
+  "tagOwners": {
+    "tag:local": [
+      "group:admin"
+    ],
+    "tag:remote": [
+      "group:admin"
+    ]
+  },
+  "acls": [
+    {
+      "action": "accept",
+      "src": [
+        "group:admin"
+      ],
+      "dst": [
+        "0.0.0.0/0:*",
+        "::/0:*"
+      ]
+    }
+  ]
+}
