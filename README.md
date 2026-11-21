@@ -35,7 +35,7 @@ uv pip install -r requirements.txt
 ansible-galaxy install -r requirements-github.yml
 ```
 
-Write your own inventory and templates/files:
+Write your own inventory and templates/files (sample files don't work out of the box, you **need** to adjust them):
 
 ``` bash
 cp -r sample/inventory sample/templates sample/files .
