@@ -15,7 +15,7 @@
 
 - name: Forget old host key
   ansible.builtin.known_hosts:
-    name: { { proxmox_template_running_address: !!null "" }: !!null "" }
+    name: "{{ proxmox_template_running_address }}"
     state: absent
 
 - ansible.builtin.include_vars:
@@ -25,7 +25,7 @@
   include_role:
     name: grghomelab.roles.common_config
     apply:
-      delegate_to: { { proxmox_template_running_address: !!null "" }: !!null "" }
+      delegate_to: "{{ proxmox_template_running_address }}"
       become: true
 
 - name: "Turn VM/LXC {{ template.name }} on node {{ template.node }} (VM ID: {{ template.id }}) into template"
